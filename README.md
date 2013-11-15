@@ -23,30 +23,32 @@ You need the Google API client and a key:
 * Get a Google API Developer Key ([here][gkey])
 * Put the key in a file called *"google_api.key"* on the same location as the code.
 
-	SEARCH PARAMETERS:
-	  
-	 -q | --query    : Specify the query (Usually the company name)  
-	 -f | --format   : Specify the email format   
-	 -m | --max      : Maximum results to return  [Default: 10]
-	 -d | --dork     : Query is actually a dork   [Default: False]
 
-	DEBUG PARAMETERS:
-	 -j | --json     : Spit out the JSON          [Default: False]
+```
+SEARCH PARAMETERS:
+	  
+	-q | --query    : Specify the query (Usually the company name)  
+	-f | --format   : Specify the email format   
+	-m | --max      : Maximum results to return  [Default: 10]
+	-d | --dork     : Query is actually a dork   [Default: False]
+
+DEBUG PARAMETERS:
+	-j | --json     : Spit out the JSON          [Default: False]
 	 
 	 
-	FORMAT TEMPLATE:
+FORMAT TEMPLATE:
 	{fn} = First Name
 	{sn} = Surname 
 	{fi} = First Initial
 	{si} = Surname Initial
 
 
-	EXAMPLES:
-	 Standard Query:
-	 * arlandria.py -q 'BobCorp' -f '{fn}.{sn}@BobCorp.com'
+EXAMPLES:
+	Standard Query:
+	* arlandria.py -q 'BobCorp' -f '{fn}.{sn}@BobCorp.com'
 
-	 Dork Query:
-	 * arlandria.py -d -q 'site:uk.linkedin.com/pub/ "current  "at BobCorp LLP"' -f '{sn}{fi}@BobCorp.com'
-
+	Dork Query:
+	* arlandria.py -d -q 'site:uk.linkedin.com/pub/ "current  "at BobCorp LLP"' -f '{sn}{fi}@BobCorp.com'
+```
 
 [gkey]: http://code.google.com/apis/console
