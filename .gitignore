@@ -34,3 +34,10 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+#OS Stuff
+.DS_Store
+*~
+
+#Specifics
+google_api.key
