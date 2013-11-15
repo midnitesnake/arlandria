@@ -1,7 +1,7 @@
 arlandria.py
 ============
 
-Simple LinkedIn scrapper for OSINT
+Simple LinkedIn scrapper for OSINT (Before you ask: http://www.youtube.com/watch?v=LjqSDG7ygDw)
 
 # What?
 A very simple python script that uses the Google Custom Search API to search for people on LinedIn based on a query or a Google dork.
