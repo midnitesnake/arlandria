@@ -23,7 +23,7 @@
 #  3) Put the key in a file called "google_api.key" on the same location as the code.
 
 __author__ = 'kussic@chaos6.net (Ari Davies)'
-__version__ = '0.2a
+__version__ = '0.2b'
 
 import os, sys, getopt,pprint,string
 from apiclient.discovery import build
@@ -123,7 +123,7 @@ def harvest(query,hcard,page):
       for x in personCard:
         sys.stdout.write(',"' + x['role'] + '"')
         sys.stdout.write(',"' + x['location'] + '"')
-   except:
+  except:
      continue	
 	
 def main():
@@ -148,7 +148,6 @@ def main():
           query = a
         if o == "-j" or o == "--json":
           json = True
-          # Mith -- added format parameter 
         if o == "-f" or o == "--format":
           format = True
           formatStr = a.replace('{','${')
@@ -157,9 +156,9 @@ def main():
         if o == "-d" or o == "--dork":
           dork = True 
 
-    except getopt.GetoptError:
-     cusage()
-     sys.exit(1)
+  except getopt.GetoptError as err:
+    cusage()
+    sys.exit(1)
   except IndexError:
     cusage()
     sys.exit(1) 
