@@ -23,20 +23,18 @@
 #  3) Put the key in a file called "google_api.key" on the same location as the code.
 
 __author__ = 'kussic@chaos6.net (Ari Davies)'
-__version__ = '0.1'
+__version__ = '0.2a
 
 import os, sys, getopt,pprint,string
 from apiclient.discovery import build
 
 def logo():
-
-	print '\n\nArlandria - v' + __version__
+  print '\n\nArlandria - v' + __version__
 
 def cusage():
-
-	logo()
-	print """
-
+  logo()
+  print """
+  
 SEARCH PARAMETERS:
   
  -q | --query    : Specify the query (Usually the company name)  
@@ -62,10 +60,9 @@ EXAMPLES:
  Dork Query:
  * arlandria.py -d -q 'site:uk.linkedin.com/pub/ "current  "at BobCorp LLP"' -f '{sn}{fi}@BobCorp.com'
  
- """
+"""
 
 def harvest(query,hcard,page):
-
   devKeyfile = open('google_api.key', 'r')
   devKey = devKeyfile.readline().rstrip()
   devKeyfile.close()
@@ -78,108 +75,100 @@ def harvest(query,hcard,page):
   # -- NOT FULLY IMPLEMENTED YET --
   
   if hcard == True:
-   fieldsQ = 'items/pagemap/hcard(fn,title)'
+    fieldsQ = 'items/pagemap/hcard(fn,title)'
   else:
-   fieldsQ = 'items/title,items/snippet,items/pagemap/person(role,location)'
+    fieldsQ = 'items/title,items/snippet,items/pagemap/person(role,location)'
 
   if dork == True:
-   #sys.stderr.write('Using Open CSE\n')
-   cxQ = '013036536707430787589:_pqjad5hr1a' #Open CSE
+    #sys.stderr.write('Using Open CSE\n')
+    cxQ = '013036536707430787589:_pqjad5hr1a' #Open CSE
   else:
-   #sys.stderr.write('Using default CSE\n')
-   cxQ = '016629816658822411423:xzvfv-aza9y' #*.linkedin.com/pub CSE
-
-   
+    #sys.stderr.write('Using default CSE\n')
+    cxQ = '016629816658822411423:xzvfv-aza9y' #*.linkedin.com/pub CSE
 
   global res
 
   res = service.cse().list(
-      prettyPrint='false',
-      q=query,
-      cx=cxQ,
-      fields=fieldsQ,
-      start=page,
+    prettyPrint='false',
+    q=query,
+    cx=cxQ,
+    fields=fieldsQ,
+    start=page,
     ).execute()
 
   if json == True:
-   print "-------- <JSON> ----------"
-   pprint.pprint(res)
-   print "-------- </JSON> ----------"
+    print "-------- <JSON> ----------"
+    pprint.pprint(res)
+    print "-------- </JSON> ----------"
    
  
   itemsStr = res['items']
 
   for i in itemsStr:
-   personName = i['title']
-   personSnippet = i['snippet']
-   print '' 
-   s = string.Template(formatStr)
-   fname = string.split(personName)[0].lower()
-   lname = string.split(personName)[1].lower()
-   finit = ''.join(map(lambda w: w[:1], fname.split()))
-   linit = ''.join(map(lambda w: w[:1], lname.split()))
-   sys.stdout.write(s.substitute(fn=fname, sn=lname, fi=finit, si=linit))
+    personName = i['title']
+    personSnippet = i['snippet']
+    print '' 
+    s = string.Template(formatStr)
+    fname = string.split(personName)[0].lower()
+    lname = string.split(personName)[1].lower()
+    finit = ''.join(map(lambda w: w[:1], fname.split()))
+    linit = ''.join(map(lambda w: w[:1], lname.split()))
+    sys.stdout.write(s.substitute(fn=fname, sn=lname, fi=finit, si=linit))
        
    
-   sys.stdout.write(',' + fname + ' ' + lname) 
-   try:
-    pagemap = i['pagemap']
-    personCard = pagemap['person']
-    for x in personCard:
-     sys.stdout.write(',"' + x['role'] + '"')
-     sys.stdout.write(',"' + x['location'] + '"')
+    sys.stdout.write(',' + fname + ' ' + lname) 
+    try:
+      pagemap = i['pagemap']
+      personCard = pagemap['person']
+      for x in personCard:
+        sys.stdout.write(',"' + x['role'] + '"')
+        sys.stdout.write(',"' + x['location'] + '"')
    except:
-    continue	
+     continue	
 	
 def main():
 
   try:
-   if sys.argv[1] :
-    opts, args = getopt.getopt(sys.argv[1:], "q:jf:m:d", ["query=", "json", "format=", "max=", "dork"])
-    #print "Opts: " + str(opts) + " Args: " + str(args)
+    if sys.argv[1] :
+      opts, args = getopt.getopt(sys.argv[1:], "q:jf:m:d", ["query=", "json", "format=", "max=", "dork"])
+      #print "Opts: " + str(opts) + " Args: " + str(args)
 
-    #defaults go here
-    global json
-    json = False
-    global filter
-    format = False
-    page = 10
-    global formatStr
-    global dork
-    dork = False
+      #defaults go here
+      global json
+      json = False
+      global filter
+      format = False
+      page = 10
+      global formatStr
+      global dork
+      dork = False
     
-    
+      for o, a in opts:
+        if o == "-q" or o == "--query":
+          query = a
+        if o == "-j" or o == "--json":
+          json = True
+          # Mith -- added format parameter 
+        if o == "-f" or o == "--format":
+          format = True
+          formatStr = a.replace('{','${')
+        if o == "-m" or o == "--max":
+          page = int(a)
+        if o == "-d" or o == "--dork":
+          dork = True 
 
-
-    for o, a in opts:
-     if o == "-q" or o == "--query":
-      query = a
-     if o == "-j" or o == "--json":
-      json = True
-     # Mith -- added format parameter 
-    
-     if o == "-f" or o == "--format":
-      format = True
-      formatStr = a.replace('{','${')
-    
-     if o == "-m" or o == "--max":
-      page = int(a)
- 
-     if o == "-d" or o == "--dork":
-      dork = True 
-
-  except getopt.GetoptError:
-   cusage()
-   sys.exit(1)
+    except getopt.GetoptError:
+     cusage()
+     sys.exit(1)
   except IndexError:
-   cusage()
-   sys.exit(1) 
+    cusage()
+    sys.exit(1) 
 
   #Check that the user has specified a --format
   if format == False:
-   sys.stderr.write('Error: No --format specified...')
-   cusage()
-   sys.exit(1)   
+    sys.stderr.write('Error: No --format specified...')
+    cusage()
+    sys.exit(1)   
 
   #Initiating the harvest loop
   sys.stdout.write('Email,' + 'Name,' + 'Role,' + 'Location')  
@@ -188,8 +177,8 @@ def main():
     #sys.stderr.write('\nGoogle Results - Results ' + str(pagenum) + ' to ' + str(pagenum+9) + "\n")
     harvest(query,False,pagenum)
   except:
-   print "Error: ", sys.exc_info()[1]
-   sys.exit(1)
+    print "Error: ", sys.exc_info()[1]
+    sys.exit(1)
 
   print ''
 
